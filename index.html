@@ -5,21 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Editor</title>
     
+    <!-- Font Awesome Kit -->
+    <script src="https://kit.fontawesome.com/34cf3883f3.js" crossorigin="anonymous"></script>
+    
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/theme/material-ocean.min.css">
     
-    <!-- Custom CSS via jsDelivr with cache busting -->
+    <!-- Custom CSS via jsDelivr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/BearClubStudios/offlinefilereader@main/styles.css?v=1.0.0">
 </head>
 <body>
     <div class="toolbar">
-        <button id="runBtn"><i class="fas fa-play"></i> Run</button>
-        <button id="downloadBtn"><i class="fas fa-download"></i> Export</button>
-        <button id="newTabBtn"><i class="fas fa-external-link-alt"></i> New Tab</button>
+        <button id="runBtn">
+            <i class="fas fa-play"></i> Run
+        </button>
+        <button id="downloadBtn">
+            <i class="fas fa-download"></i> Export
+        </button>
+        <button id="newTabBtn">
+            <i class="fas fa-external-link-alt"></i> New Tab
+        </button>
         <div style="flex-grow: 1"></div>
-        <button id="verticalLayout"><i class="fas fa-columns"></i></button>
-        <button id="horizontalLayout"><i class="fas fa-rows"></i></button>
+        <button id="verticalLayout">
+            <i class="fas fa-columns"></i>
+        </button>
+        <button id="horizontalLayout">
+            <i class="fas fa-arrows-alt-h"></i>
+        </button>
     </div>
 
     <div class="container" id="container">
@@ -53,9 +66,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/mode/css/css.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-    <script src="https://kit.fontawesome.com/your-fa-kit-code.js"></script>
     
-    <!-- Custom JS via jsDelivr with cache busting -->
+    <!-- Custom JS via jsDelivr -->
     <script src="https://cdn.jsdelivr.net/gh/BearClubStudios/offlinefilereader@main/app.js?v=1.0.0"></script>
 </body>
 </html>
