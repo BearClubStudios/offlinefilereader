@@ -7,175 +7,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/theme/material-ocean.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
     <style>
-        :root {
-            --bg-color: #1a1a1a;
-            --tab-bg: #2d2d2d;
-            --accent: #569cd6;
-            --text: #d4d4d4;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg-color);
-            color: var(--text);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            height: calc(100vh - 40px);
-            gap: 5px;
-            padding: 5px;
-        }
-
-        .editor-pane, .preview-pane {
-            background: var(--tab-bg);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .tabs-bar {
-            display: flex;
-            background: #252526;
-            padding: 5px 10px 0 10px;
-            gap: 5px;
-            border-bottom: 1px solid #333;
-        }
-
-        .tab {
-            padding: 8px 20px;
-            cursor: pointer;
-            background: #2d2d2d;
-            border-radius: 6px 6px 0 0;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            font-size: 0.9em;
-            transition: all 0.2s;
-        }
-
-        .tab.active {
-            background: var(--bg-color);
-            color: var(--accent);
-        }
-
-        .tab i {
-            font-size: 0.8em;
-            opacity: 0.7;
-        }
-
-        .toolbar {
-            display: flex;
-            align-items: center;
-            padding: 8px 15px;
-            background: #252526;
-            border-bottom: 1px solid #333;
-            gap: 10px;
-        }
-
-        button {
-            padding: 6px 12px;
-            background: #3a3d41;
-            border: none;
-            border-radius: 4px;
-            color: var(--text);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-
-        button:hover {
-            background: var(--accent);
-            color: white;
-        }
-
-        .CodeMirror {
-            height: calc(100vh - 120px) !important;
-            font-family: 'Fira Code', monospace;
-            font-size: 13px;
-            padding: 10px 0;
-        }
-
-        #preview {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-        }
-
-        .file-tab {
-            position: relative;
-        }
-
-        .file-tab input {
-            background: transparent;
-            border: none;
-            color: inherit;
-            width: 120px;
-            font-size: 0.9em;
-        }
+        /* KEEP ALL YOUR ORIGINAL CSS HERE */
+        :root { --bg-color: #1a1a1a; --tab-bg: #2d2d2d; --accent: #569cd6; --text: #d4d4d4; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg-color); color: var(--text); height: 100vh; overflow: hidden; }
+        .container { display: grid; grid-template-columns: 1fr 1fr; height: calc(100vh - 40px); gap: 5px; padding: 5px; }
+        .editor-pane, .preview-pane { background: var(--tab-bg); border-radius: 6px; overflow: hidden; }
+        .tabs-bar { display: flex; background: #252526; padding: 5px 10px 0 10px; gap: 5px; border-bottom: 1px solid #333; }
+        .tab { padding: 8px 20px; cursor: pointer; background: #2d2d2d; border-radius: 6px 6px 0 0; display: flex; gap: 8px; align-items: center; font-size: 0.9em; transition: all 0.2s; }
+        .tab.active { background: var(--bg-color); color: var(--accent); }
+        .tab i { font-size: 0.8em; opacity: 0.7; }
+        .toolbar { display: flex; align-items: center; padding: 8px 15px; background: #252526; border-bottom: 1px solid #333; gap: 10px; }
+        button { padding: 6px 12px; background: #3a3d41; border: none; border-radius: 4px; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        button:hover { background: var(--accent); color: white; }
+        .CodeMirror { height: calc(100vh - 120px) !important; font-family: 'Fira Code', monospace; font-size: 13px; padding: 10px 0; }
+        #preview { width: 100%; height: 100%; border: none; background: white; }
+        .file-tab { position: relative; }
+        .file-tab input { background: transparent; border: none; color: inherit; width: 120px; font-size: 0.9em; }
     </style>
 </head>
 <body>
     <div class="toolbar">
-        <button onclick="runCode()">
-            <i class="fas fa-play"></i> Run
-        </button>
-        <button onclick="downloadCode()">
-            <i class="fas fa-download"></i> Export
-        </button>
-        <button onclick="openNewTab()">
-            <i class="fas fa-external-link-alt"></i> New Tab
-        </button>
+        <button onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+        <button onclick="downloadCode()"><i class="fas fa-download"></i> Export</button>
+        <button onclick="openNewTab()"><i class="fas fa-external-link-alt"></i> New Tab</button>
         <div style="flex-grow: 1"></div>
-        <button onclick="toggleLayout('vertical')">
-            <i class="fas fa-columns"></i>
-        </button>
-        <button onclick="toggleLayout('horizontal')">
-            <i class="fas fa-rows"></i>
-        </button>
+        <button onclick="toggleLayout('vertical')"><i class="fas fa-columns"></i></button>
+        <button onclick="toggleLayout('horizontal')"><i class="fas fa-rows"></i></button>
     </div>
 
     <div class="container" id="container">
         <div class="editor-pane">
             <div class="tabs-bar">
-                <div class="tab active" data-file="index.html">
-                    <i class="fab fa-html5"></i>
-                    <div class="file-tab">
-                        <input value="index.html" readonly>
-                    </div>
-                </div>
-                <div class="tab" data-file="style.css">
-                    <i class="fab fa-css3-alt"></i>
-                    <div class="file-tab">
-                        <input value="style.css" readonly>
-                    </div>
-                </div>
-                <div class="tab" data-file="script.js">
-                    <i class="fab fa-js-square"></i>
-                    <div class="file-tab">
-                        <input value="script.js" readonly>
-                    </div>
-                </div>
+                <div class="tab active" data-file="index.html"><i class="fab fa-html5"></i><div class="file-tab"><input value="index.html" readonly></div></div>
+                <div class="tab" data-file="style.css"><i class="fab fa-css3-alt"></i><div class="file-tab"><input value="style.css" readonly></div></div>
+                <div class="tab" data-file="script.js"><i class="fab fa-js-square"></i><div class="file-tab"><input value="script.js" readonly></div></div>
             </div>
             <div id="html-editor" class="editor active"></div>
             <div id="css-editor" class="editor"></div>
             <div id="js-editor" class="editor"></div>
         </div>
-        <div class="preview-pane">
-            <iframe id="preview"></iframe>
-        </div>
+        <div class="preview-pane"><iframe id="preview"></iframe></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.js"></script>
@@ -184,13 +58,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/mode/javascript/javascript.min.js"></script>
 
     <script>
+        // Initialize editors
         const editors = {
             'index.html': CodeMirror(document.getElementById('html-editor'), {
                 mode: 'htmlmixed',
                 theme: 'material-ocean',
                 lineNumbers: true,
                 autoCloseTags: true,
-                indentUnit: 4,
                 value: `<!DOCTYPE html>
 <html>
 <head>
@@ -234,41 +108,42 @@
             });
         });
 
+        // Fixed functions
         function runCode() {
             const html = editors['index.html'].getValue();
             const css = editors['style.css'].getValue();
             const js = editors['script.js'].getValue();
             
-            const fullCode = `
-                ${html.replace('</head>', `<style>${css}</style></head>`)}
-                <script>${js}<\/script>
-            `;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
             
-            document.getElementById('preview').srcdoc = fullCode;
+            const style = doc.createElement('style');
+            style.textContent = css;
+            doc.head.appendChild(style);
+            
+            const script = doc.createElement('script');
+            script.textContent = js;
+            doc.body.appendChild(script);
+            
+            document.getElementById('preview').srcdoc = doc.documentElement.outerHTML;
         }
 
-        function downloadCode() {
-            const html = editors['index.html'].getValue();
-            const css = editors['style.css'].getValue();
-            const js = editors['script.js'].getValue();
-            
-            const files = {
-                'index.html': html,
-                'style.css': css,
-                'script.js': js
-            };
-            
-            const zip = new JSZip();
-            for (const [filename, content] of Object.entries(files)) {
-                zip.file(filename, content);
-            }
-            
-            zip.generateAsync({type: "blob"}).then(blob => {
+        async function downloadCode() {
+            try {
+                const zip = new JSZip();
+                zip.file("index.html", editors['index.html'].getValue());
+                zip.file("style.css", editors['style.css'].getValue());
+                zip.file("script.js", editors['script.js'].getValue());
+                
+                const blob = await zip.generateAsync({type: "blob"});
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 link.download = 'project.zip';
                 link.click();
-            });
+                URL.revokeObjectURL(link.href);
+            } catch (error) {
+                alert('Error generating ZIP file: ' + error.message);
+            }
         }
 
         function openNewTab() {
@@ -276,25 +151,28 @@
             const css = editors['style.css'].getValue();
             const js = editors['script.js'].getValue();
             
-            const fullCode = `
-                ${html.replace('</head>', `<style>${css}</style></head>`)}
-                <script>${js}<\/script>
-            `;
+            const fullCode = `<!DOCTYPE html>
+${html.replace('</head>', `<style>${css}</style></head>`)}
+<script>${js}</script>`;
             
-            const newWindow = window.open('about:blank');
-            newWindow.document.write(fullCode);
-            newWindow.document.close();
+            const blob = new Blob([fullCode], {type: 'text/html'});
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
         }
 
         function toggleLayout(direction) {
             const container = document.getElementById('container');
             container.style.gridTemplateColumns = direction === 'vertical' ? '1fr 1fr' : '1fr';
             container.style.gridTemplateRows = direction === 'horizontal' ? '1fr 1fr' : '1fr';
+            setTimeout(() => {
+                editors['index.html'].refresh();
+                editors['style.css'].refresh();
+                editors['script.js'].refresh();
+            }, 100);
         }
 
-        // Initial setup
+        // Initial run
         runCode();
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 </body>
 </html>
