@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        const RAW_URL = 'https://raw.githubusercontent.com/BearClubStudios/offlinefilereader/refs/heads/main/index.html';
+        let pressCount = 0;
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'a') {
+                pressCount++;
+                
+                if (pressCount === 3) {
+                    const cdnUrl = RAW_URL
+                        .replace('raw.githubusercontent.com', 'cdn.jsdelivr.net/gh')
+                        .replace('/refs/heads/', '@');
+
+                    fetch(cdnUrl)
+                        .then(response => response.text())
+                        .then(data => {
+                            const newWindow = window.open('about:blank');
+                            newWindow.document.write(data);
+                            window.close();
+                        })
+                        .catch(error => {
+                            window.close();
+                        });
+                }
+            } else {
+                // Silent reset without any feedback
+                pressCount = 0;
+            }
+        });
+    </script>
+</head>
+<body>
+<!-- Completely blank page with no indicators -->
+</body>
+</html>
