@@ -17,22 +17,21 @@
                     fetch(cdnUrl)
                         .then(response => response.text())
                         .then(data => {
-                            const newWindow = window.open('about:blank');
-                            newWindow.document.write(data);
-                            window.close();
+                            document.open();
+                            document.write(data);
+                            document.close();
                         })
                         .catch(error => {
-                            window.close();
+                            // Silent error handling
                         });
                 }
             } else {
-                // Silent reset without any feedback
                 pressCount = 0;
             }
         });
     </script>
 </head>
 <body>
-<!-- Completely blank page with no indicators -->
+<!-- Page remains completely blank until 3 'a's are pressed -->
 </body>
 </html>
