@@ -1,160 +1,66 @@
 document.addEventListener('DOMContentLoaded', () => {
-    let currentFile = null;
-    const editors = {};
-    const fileTypeIcons = {
-        html: 'fab fa-html5',
-        css: 'fab fa-css3-alt',
-        js: 'fab fa-js-square',
-        txt: 'fas fa-file-alt',
-        json: 'fas fa-code'
-    };
-
-    // Initialize default files
-    createEditor('index.html', `<!DOCTYPE html>
+    // Initialize editors
+    const editors = {
+        html: CodeMirror(document.getElementById('html-editor'), {
+            mode: 'htmlmixed',
+            theme: 'material-ocean',
+            lineNumbers: true,
+            autoCloseTags: true,
+            value: `<!DOCTYPE html>
 <html>
 <head>
-    <title>New Project</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Hello World</h1>
+    <script src="script.js"></script>
 </body>
-</html>`, 'htmlmixed');
-    
-    createEditor('style.css', `body {
+</html>`
+        }),
+        css: CodeMirror(document.getElementById('css-editor'), {
+            mode: 'css',
+            theme: 'material-ocean',
+            lineNumbers: true,
+            value: `body {
     background: #f0f0f0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-}`, 'css');
+}`
+        }),
+        js: CodeMirror(document.getElementById('js-editor'), {
+            mode: 'javascript',
+            theme: 'material-ocean',
+            lineNumbers: true,
+            value: `console.log('Hello from JavaScript!');\n\ndocument.querySelector('h1').addEventListener('click', () => {\n    alert('Clicked!');\n});`
+        })
+    };
 
-    createEditor('script.js', `console.log('Hello from JavaScript!');`, 'javascript');
+    // Tab management
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.editor').forEach(e => e.style.display = 'none');
+            tab.classList.add('active');
+            const fileType = tab.dataset.file;
+            document.getElementById(`${fileType}-editor`).style.display = 'block';
+            editors[fileType].refresh();
+        });
+    });
 
-    // Existing button functionality (KEEP THIS)
+    // Button functionality
     document.getElementById('runBtn').addEventListener('click', runCode);
     document.getElementById('downloadBtn').addEventListener('click', downloadCode);
     document.getElementById('newTabBtn').addEventListener('click', openNewTab);
     document.getElementById('verticalLayout').addEventListener('click', () => toggleLayout('vertical'));
     document.getElementById('horizontalLayout').addEventListener('click', () => toggleLayout('horizontal'));
 
-    // New file functionality (ADD BELOW)
-    document.getElementById('newFileBtn').addEventListener('click', createNewFile);
-    document.getElementById('fileInput').addEventListener('change', handleFileImport);
-
-    function createEditor(filename, content, mode) {
-        const editorId = `${filename.replace('.','-')}-editor`;
-        const editorDiv = document.createElement('div');
-        editorDiv.className = 'editor';
-        editorDiv.id = editorId;
-        document.getElementById('editorsContainer').appendChild(editorDiv);
-
-        editors[filename] = CodeMirror(editorDiv, {
-            mode: mode,
-            theme: 'material-ocean',
-            lineNumbers: true,
-            value: content,
-            autoCloseTags: mode === 'htmlmixed'
-        });
-
-        createTab(filename);
-        switchFile(filename);
-    }
-
-    function createTab(filename) {
-        const fileType = filename.split('.').pop();
-        const tab = document.createElement('div');
-        tab.className = 'tab';
-        tab.dataset.file = filename;
-        
-        const icon = document.createElement('i');
-        icon.className = fileTypeIcons[fileType] || 'fas fa-file-code';
-        tab.appendChild(icon);
-        
-        const fileNameSpan = document.createElement('span');
-        fileNameSpan.textContent = filename;
-        tab.appendChild(fileNameSpan);
-
-        const closeBtn = document.createElement('span');
-        closeBtn.className = 'close';
-        closeBtn.innerHTML = '×';
-        closeBtn.onclick = (e) => {
-            e.stopPropagation();
-            closeFile(filename);
-        };
-        tab.appendChild(closeBtn);
-
-        tab.addEventListener('click', () => switchFile(filename));
-        document.getElementById('tabsBar').appendChild(tab);
-    }
-
-    function switchFile(filename) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.editor').forEach(e => e.style.display = 'none');
-        
-        const tab = document.querySelector(`.tab[data-file="${filename}"]`);
-        const editor = document.getElementById(`${filename.replace('.','-')}-editor`);
-        
-        tab.classList.add('active');
-        editor.style.display = 'block';
-        editors[filename].refresh();
-        currentFile = filename;
-    }
-
-    function createNewFile() {
-        const fileName = prompt('Enter filename (e.g., newfile.html):');
-        if (!fileName) return;
-
-        const fileType = fileName.split('.').pop();
-        const modeMap = {
-            html: 'htmlmixed',
-            css: 'css',
-            js: 'javascript',
-            txt: 'text',
-            json: 'application/json'
-        };
-
-        const defaultContent = fileType === 'html' ? 
-            `<!DOCTYPE html>\n<html>\n<head>\n    <title>New File</title>\n</head>\n<body>\n\n</body>\n</html>` : '';
-
-        createEditor(fileName, defaultContent, modeMap[fileType] || 'text');
-    }
-
-    function handleFileImport(e) {
-        const files = e.target.files;
-        for (const file of files) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                createEditor(file.name, e.target.result, getModeFromExtension(file.name));
-            };
-            reader.readAsText(file);
-        }
-    }
-
-    function getModeFromExtension(filename) {
-        const ext = filename.split('.').pop();
-        return {
-            html: 'htmlmixed',
-            css: 'css',
-            js: 'javascript'
-        }[ext] || 'text';
-    }
-
-    function closeFile(filename) {
-        if (Object.keys(editors).length === 1) {
-            alert("Can't close the last file!");
-            return;
-        }
-        delete editors[filename];
-        document.getElementById(`${filename.replace('.','-')}-editor`).remove();
-        document.querySelector(`.tab[data-file="${filename}"]`).remove();
-        switchFile(Object.keys(editors)[0]);
-    }
-
     function runCode() {
-        const html = editors['index.html']?.getValue() || '';
-        const css = editors['style.css']?.getValue() || '';
-        const js = editors['script.js']?.getValue() || '';
-
+        const html = editors.html.getValue();
+        const css = editors.css.getValue();
+        const js = editors.js.getValue();
+        
         const fullCode = `
             <!DOCTYPE html>
             ${html.replace('</head>', `<style>${css}</style></head>`)}
@@ -165,28 +71,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function downloadCode() {
-        try {
-            const zip = new JSZip();
-            for (const [filename, editor] of Object.entries(editors)) {
-                zip.file(filename, editor.getValue());
-            }
-            const content = await zip.generateAsync({type: "blob"});
-            const url = URL.createObjectURL(content);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'project.zip';
-            a.click();
-            URL.revokeObjectURL(url);
-        } catch (error) {
-            alert('Error generating ZIP file: ' + error.message);
-        }
+        const zip = new JSZip();
+        zip.file("index.html", editors.html.getValue());
+        zip.file("style.css", editors.css.getValue());
+        zip.file("script.js", editors.js.getValue());
+        
+        const content = await zip.generateAsync({type: "blob"});
+        const url = URL.createObjectURL(content);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'project.zip';
+        a.click();
+        URL.revokeObjectURL(url);
     }
 
     function openNewTab() {
-        if (!currentFile) return;
-        const content = editors[currentFile].getValue();
-        const blob = new Blob([content], {type: 'text/plain'});
-        window.open(URL.createObjectURL(blob));
+        const html = editors.html.getValue();
+        const css = editors.css.getValue();
+        const js = editors.js.getValue();
+        
+        const fullCode = `
+            <!DOCTYPE html>
+            ${html.replace('</head>', `<style>${css}</style></head>`)}
+            <script>${js}<\/script>
+        `;
+        
+        const newWindow = window.open();
+        newWindow.document.write(fullCode);
+        newWindow.document.close();
     }
 
     function toggleLayout(direction) {
@@ -198,6 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     }
 
-    // Initial setup
-    switchFile('index.html');
+    // Initial code execution
+    runCode();
 });
