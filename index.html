@@ -20,6 +20,13 @@
         <button id="runBtn">
             <i class="fas fa-play"></i> Run
         </button>
+<button onclick="document.getElementById('fileInput').click()">
+    <i class="fas fa-folder-open"></i> Import Files
+</button>
+<button onclick="createNewFile()">
+    <i class="fas fa-plus"></i> New File
+</button>
+<input type="file" id="fileInput" multiple style="display: none;">
         <button id="downloadBtn">
             <i class="fas fa-download"></i> Export
         </button>
