@@ -98,3 +98,22 @@ button:hover {
     border: none;
     background: white;
 }
+
+.editor {
+    display: none;
+    height: 100%;
+}
+
+.editor.active {
+    display: block;
+}
+
+.close {
+    margin-left: 10px;
+    cursor: pointer;
+    color: #888;
+}
+
+.close:hover {
+    color: #fff;
+}
