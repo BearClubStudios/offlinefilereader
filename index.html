@@ -44,20 +44,24 @@
 
     <div class="container" id="container">
         <div class="editor-pane">
-            <div class="tabs-bar">
-                <div class="tab active" data-file="html">
-                    <i class="fab fa-html5"></i>
-                    <span>index.html</span>
-                </div>
-                <div class="tab" data-file="css">
-                    <i class="fab fa-css3-alt"></i>
-                    <span>style.css</span>
-                </div>
-                <div class="tab" data-file="js">
-                    <i class="fab fa-js-square"></i>
-                    <span>script.js</span>
-                </div>
-            </div>
+            <!-- Update your default tabs to include close buttons -->
+<div class="tabs-bar">
+    <div class="tab active" data-file="index.html">
+        <i class="fab fa-html5"></i>
+        <span>index.html</span>
+        <span class="close">×</span>
+    </div>
+    <div class="tab" data-file="style.css">
+        <i class="fab fa-css3-alt"></i>
+        <span>style.css</span>
+        <span class="close">×</span>
+    </div>
+    <div class="tab" data-file="script.js">
+        <i class="fab fa-js-square"></i>
+        <span>script.js</span>
+        <span class="close">×</span>
+    </div>
+</div>
             <div id="html-editor" class="editor active"></div>
             <div id="css-editor" class="editor"></div>
             <div id="js-editor" class="editor"></div>
